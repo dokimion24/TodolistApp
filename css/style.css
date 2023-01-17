@@ -1,1 +1,13 @@
 @import './global.css';
+@import './reset.css';
+
+.todo {
+  display: flex;
+  position: relative;
+  width: 700px;
+}
+
+.todo__btn {
+  position: absolute;
+  right: 0;
+}
