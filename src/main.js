@@ -1,8 +1,8 @@
-import { readTodos, createTodo, updateTodo, deleteTodo } from './request.js';
+import { readTodos, createTodo, editTodo, deleteTodo } from './request.js';
 
 const formEl = document.querySelector('form');
 const inputEl = formEl.querySelector('input');
-const todoContainer = document.querySelector('.todo-container');
+const todoContainer = document.querySelector('.todo__container');
 
 const renderTodos = (todos) => {
   const liEls = todos.map((todo) => {
@@ -13,26 +13,44 @@ const renderTodos = (todos) => {
         <span class="material-symbols-outlined">
         radio_button_unchecked
         </span>
-        <span contenteditable="true">${todo.title}</span>
+        <span class="text">${todo.title}</span>
+        <input class="display-none" type ="text"/>
       </div>
       <div class="todo__btn">
-        <input class="display-none" type ="text"/>
-        <button class="doneBtn">확인</button>
-        <button>삭제</button>
+        <button class="edit-Btn">
+          <span class="material-symbols-outlined">edit</span>
+        </button>
+        <button class="done-Btn display-none">
+          <span class="material-symbols-outlined">done</span>
+        </button>
+        <button>
+          <span class="material-symbols-outlined">delete</span>
+        </button>
       </div>
     `;
+    let newText = '';
 
-    const updateBtn = liEl.querySelectorAll('button')[0];
-    const updateInput = liEl.querySelector('input');
-    const deleteBtn = liEl.querySelectorAll('button')[1];
+    const todoText = liEl.querySelector('.text');
+    const editInput = liEl.querySelector('input');
+    const editBtn = liEl.querySelectorAll('button')[0];
+    const doneBtn = liEl.querySelectorAll('button')[1];
+    const deleteBtn = liEl.querySelectorAll('button')[2];
 
-    updateBtn.addEventListener('click', async () => {
-      confirmBtn.classList.remove('display-none');
-      updateBtn.classList.add('display-none');
-      const newText = liEl.querySelector('input').value;
-      updateInput.classList.remove('display-none');
+    editBtn.addEventListener('click', async () => {
+      doneBtn.classList.remove('display-none');
+      editBtn.classList.add('display-none');
+      editInput.classList.remove('display-none');
+      todoText.classList.add('display-none');
 
-      await updateTodo(todo, newText);
+      editInput.value = `${todo.title}`;
+    });
+
+    doneBtn.addEventListener('click', async () => {
+      doneBtn.classList.add('display-none');
+      editBtn.classList.remove('display-none');
+
+      newText = editInput.value;
+      await editTodo(todo, newText);
       const todos = await readTodos();
       renderTodos(todos);
     });
