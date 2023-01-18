@@ -5,7 +5,7 @@ const headers = {
 };
 
 export const createTodo = async (title) => {
-  const res = await fetch(
+  await fetch(
     'https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos',
     {
       method: 'POST',
@@ -15,8 +15,6 @@ export const createTodo = async (title) => {
       }),
     }
   );
-  const json = await res.json();
-  return json;
 };
 
 export const readTodos = async () => {
@@ -31,29 +29,26 @@ export const readTodos = async () => {
   return json;
 };
 
-export const updateTodo = async (todo) => {
-  const res = await fetch(
+export const editTodo = async (todo, text) => {
+  await fetch(
     `https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos/${todo.id}`,
     {
       method: 'PUT',
       headers,
       body: JSON.stringify({
-        title: `${todo.title}!`,
+        title: `${text}`,
         done: todo.done,
       }),
     }
   );
-  const json = await res.json();
-  return json;
 };
 
 export const deleteTodo = async (todo) => {
-  const res = await fetch(
+  await fetch(
     `https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos/${todo.id}`,
     {
       method: 'DELETE',
       headers,
     }
   );
-  const json = await res.json();
 };
