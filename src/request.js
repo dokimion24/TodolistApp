@@ -29,23 +29,23 @@ export const readTodos = async () => {
   return json;
 };
 
-export const editTodo = async (todo, text) => {
+export const editTodo = async (id, text) => {
   await fetch(
-    `https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos/${todo.id}`,
+    `https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos/${id}`,
     {
       method: 'PUT',
       headers,
       body: JSON.stringify({
         title: `${text}`,
-        done: todo.done,
+        done: 'false',
       }),
     }
   );
 };
 
-export const deleteTodo = async (todo) => {
+export const deleteTodo = async (id) => {
   await fetch(
-    `https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos/${todo.id}`,
+    `https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos/${id}`,
     {
       method: 'DELETE',
       headers,
