@@ -1,15 +1,12 @@
 import { readTodos, createTodo, editTodo, deleteTodo } from './request.js';
-
+import { renderDate } from './date.js';
 const todoForm = document.querySelector('form');
 const todoInput = todoForm.querySelector('input');
 const todosContainer = document.querySelector('.todos__container');
 
-/* 구현할 기능
-1. 삭제 시 버튼 한번만 클릭 되도록
-2. todo-input enter도 적용 되도록
-3. 
+renderDate();
 
-*/
+
 
 const showTodos = async () => {
   todosContainer.innerHTML = '';
@@ -110,7 +107,7 @@ todoForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   let todoInputText = todoInput.value;
 
-  await createTodo(inputText);
+  await createTodo(todoInputText);
   showTodos();
   todoInputText = '';
 });
@@ -121,3 +118,6 @@ todoForm.addEventListener('submit', async (event) => {
 })();
 
 todosContainer.addEventListener('click', clickTodosHandler);
+setInterval(() => {
+  renderDate();
+}, 1000);
