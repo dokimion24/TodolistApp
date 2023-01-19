@@ -1,8 +1,15 @@
 import { readTodos, createTodo, editTodo, deleteTodo } from './request.js';
 
-const formEl = document.querySelector('form');
-const inputEl = formEl.querySelector('input');
+const todoForm = document.querySelector('form');
+const todoInput = todoForm.querySelector('input');
 const todosContainer = document.querySelector('.todos__container');
+
+/* 구현할 기능
+1. 삭제 시 버튼 한번만 클릭 되도록
+2. todo-input enter도 적용 되도록
+3. 
+
+*/
 
 const showTodos = async () => {
   todosContainer.innerHTML = '';
@@ -47,9 +54,19 @@ const deleteEditTodo = async (todoContainer) => {
   showTodos();
 };
 
+const toggleTodoIcon = async (todoContainer) => {
+  const id = todoContainer.dataset.id;
+
+  const icon = todoContainer.querySelector('.todo--toggle');
+  icon.textContent =
+    icon.textContent === 'radio_button_unchecked'
+      ? 'check_circle'
+      : 'radio_button_unchecked';
+};
+
 const clickTodosHandler = async (e) => {
   const todoContainer = e.target.closest('.todo-container');
-  console.log(todoContainer);
+  // console.log(todoContainer);
   if (!todoContainer) {
     return;
   }
@@ -61,6 +78,9 @@ const clickTodosHandler = async (e) => {
   }
   if (e.target.matches('.delete-btn')) {
     deleteEditTodo(todoContainer);
+  }
+  if (e.target.matches('.todo--toggle')) {
+    toggleTodoIcon(todoContainer);
   }
 };
 
@@ -86,14 +106,13 @@ const renderTodos = (todos) => {
   todosContainer.innerHTML += todosEl;
 };
 
-let inputText = '';
-formEl.addEventListener('submit', async (event) => {
+todoForm.addEventListener('submit', async (event) => {
   event.preventDefault();
-  inputText = inputEl.value;
+  let todoInputText = todoInput.value;
 
   await createTodo(inputText);
-
   showTodos();
+  todoInputText = '';
 });
 
 (async () => {
