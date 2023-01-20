@@ -4,14 +4,18 @@ const todoForm = document.querySelector('form');
 const todoInput = todoForm.querySelector('input');
 const todosContainer = document.querySelector('.todos__container');
 
-renderDate();
-
-
-
 const showTodos = async () => {
-  todosContainer.innerHTML = '';
   const todos = await readTodos();
   renderTodos(todos);
+  countTodo(todos);
+};
+
+const countTodo = (todos) => {
+  const todoCounter = document.querySelector('.todo-counter');
+  const count = todos.filter((todo) => todo.done === false).length;
+  todoCounter.innerHTML = `
+    <span class="">남은 할일 ${count}</span>
+  `;
 };
 
 const startEditTodo = (todoContainer) => {
@@ -29,9 +33,7 @@ const startEditTodo = (todoContainer) => {
   editInput.value = todoText.textContent;
 };
 
-const finishEditTodo = async (todoContainer) => {
-  const id = todoContainer.dataset.id;
-
+const finishEditTodo = async (todoContainer, todo) => {
   const editBtn = todoContainer.querySelector('.edit-btn');
   editBtn.classList.remove('display-none');
 
@@ -39,9 +41,10 @@ const finishEditTodo = async (todoContainer) => {
   doneBtn.classList.add('display-none');
 
   const editInput = todoContainer.querySelector('.edit-input');
-  const newText = editInput.value;
 
-  await editTodo(id, newText);
+  todo.title = editInput.value;
+
+  await editTodo(todo);
   showTodos();
 };
 
@@ -51,19 +54,22 @@ const deleteEditTodo = async (todoContainer) => {
   showTodos();
 };
 
-const toggleTodoIcon = async (todoContainer) => {
-  const id = todoContainer.dataset.id;
-
-  const icon = todoContainer.querySelector('.todo--toggle');
-  icon.textContent =
-    icon.textContent === 'radio_button_unchecked'
-      ? 'check_circle'
-      : 'radio_button_unchecked';
+const toggleTodoIcon = async (todoContainer, todo) => {
+  todoContainer.dataset.done = `${!todo.done}`;
+  console.log(todoContainer);
+  todo.done = !todo.done;
+  await editTodo(todo);
+  showTodos();
 };
 
 const clickTodosHandler = async (e) => {
   const todoContainer = e.target.closest('.todo-container');
-  // console.log(todoContainer);
+  const todo = {
+    id: todoContainer.dataset.id,
+    title: todoContainer.querySelector('.todo-text').textContent,
+    done: 'true' === todoContainer.dataset.done,
+  };
+
   if (!todoContainer) {
     return;
   }
@@ -71,23 +77,26 @@ const clickTodosHandler = async (e) => {
     startEditTodo(todoContainer);
   }
   if (e.target.matches('.done-btn')) {
-    finishEditTodo(todoContainer);
+    finishEditTodo(todoContainer, todo);
   }
   if (e.target.matches('.delete-btn')) {
     deleteEditTodo(todoContainer);
   }
   if (e.target.matches('.todo--toggle')) {
-    toggleTodoIcon(todoContainer);
+    toggleTodoIcon(todoContainer, todo);
   }
 };
 
 const renderTodos = (todos) => {
+  todosContainer.innerHTML = '';
   const todosEl = todos
     .map(
       (todo) =>
-        `<li class="todo-container" data-id=${todo.id}>
+        `<li class="todo-container" data-id=${todo.id} data-done='${todo.done}'>
           <div>
-            <span class="material-symbols-outlined todo--toggle">radio_button_unchecked</span>
+            <span class="material-symbols-outlined todo--toggle">${
+              todo.done ? 'check_circle' : 'radio_button_unchecked'
+            }</span>
             <span class="todo-text">${todo.title}</span>
             <input class="edit-input display-none" type ="text"/>
           </div>
@@ -112,12 +121,11 @@ todoForm.addEventListener('submit', async (event) => {
   todoInputText = '';
 });
 
-(async () => {
-  const todos = await readTodos();
-  renderTodos(todos);
-})();
+renderDate();
+showTodos();
 
 todosContainer.addEventListener('click', clickTodosHandler);
+
 setInterval(() => {
   renderDate();
 }, 1000);
