@@ -12,6 +12,7 @@ export const createTodo = async (title) => {
       headers,
       body: JSON.stringify({
         title,
+        done: false,
       }),
     }
   );
@@ -29,18 +30,20 @@ export const readTodos = async () => {
   return json;
 };
 
-export const editTodo = async (id, text) => {
-  await fetch(
-    `https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos/${id}`,
+export const editTodo = async (todo) => {
+  const res = await fetch(
+    `https://asia-northeast3-heropy-api.cloudfunctions.net/api/todos/${todo.id}`,
     {
       method: 'PUT',
       headers,
       body: JSON.stringify({
-        title: `${text}`,
-        done: 'false',
+        title: todo.title,
+        done: todo.done,
       }),
     }
   );
+  const json = await res.json();
+  return json;
 };
 
 export const deleteTodo = async (id) => {
