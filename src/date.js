@@ -1,28 +1,31 @@
-const dateTime = document.querySelector('.date-time');
+const dateTime = document.querySelector(".date-time");
 
 const getCurrentDate = () => {
   const today = new Date();
   const currentDate = {
     year: today.getFullYear(),
-    month: new Intl.DateTimeFormat('en', { month: 'short' }).format(today),
+    month: new Intl.DateTimeFormat("en", { month: "short" }).format(today),
     date: today.getDate(),
-    day: new Intl.DateTimeFormat('en', { weekday: 'long' }).format(today),
+    day: new Intl.DateTimeFormat("en", { weekday: "short" }).format(today),
     hours: today.getHours(),
-    minutes: (today.getMinutes() < 10 ? '0' : '') + today.getMinutes(),
+    minutes: (today.getMinutes() < 10 ? "0" : "") + today.getMinutes(),
   };
   return currentDate;
 };
 
 export const renderDate = () => {
-  const { month, date, day, hours, minutes } = getCurrentDate();
+  const { year, month, date, day, hours, minutes } = getCurrentDate();
   dateTime.innerHTML = `
-  <div class="date-time--current-date">
-    <span>Today</span>
-    <span>${date} ${day} ${month}</span>
+  <div class="date-container">
+    <span class="date">${date}</span>
+    <div class="year">
+      <span>${month}</span>
+      <span>${year}</span>
+    </div>
+    <span class="day">${day}</span>
   </div>
-  <div class="date-time--current-time">
-    <span>Today</span>
-    <span>${hours % 12}:${minutes} ${hours > 13 ? 'PM' : 'AM'} </span>
-  </div>
+  <span class="time">  
+    ${hours % 12}:${minutes} ${hours > 13 ? "PM" : "AM"} 
+  </span>
   `;
 };
