@@ -1,15 +1,14 @@
-.hidden {
-  visibility: hidden;
-}
-
 .display-none {
   display: none;
 }
 
-button{
+button {
   cursor: pointer;
   border: none;
   background-color: transparent;
 }
 
-
+input {
+  border: none;
+  border-bottom: 1px solid #ccc;
+}
