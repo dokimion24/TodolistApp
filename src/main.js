@@ -1,8 +1,18 @@
-import { readTodos, createTodo, editTodo, deleteTodo } from './request.js';
-import { renderDate } from './date.js';
-const todoForm = document.querySelector('form');
-const todoInput = todoForm.querySelector('input');
-const todosContainer = document.querySelector('.todos__container');
+import { readTodos, createTodo, editTodo, deleteTodo } from "./request.js";
+import { renderDate } from "./date.js";
+const todoForm = document.querySelector("form");
+const todoInput = todoForm.querySelector("input");
+const todosContainer = document.querySelector(".todos__container");
+const deleteAllBtn = document.querySelector(".todo-option, .delete-all-btn");
+
+const deleteTodoAllHandler = async () => {
+  console.log(deleteAllBtn);
+  const todos = await readTodos();
+  todos.map((todo) => {
+    deleteTodo(todo.id);
+  });
+  todosContainer.innerHTML = "";
+};
 
 const showTodos = async () => {
   const todos = await readTodos();
@@ -11,7 +21,7 @@ const showTodos = async () => {
 };
 
 const countTodo = (todos) => {
-  const todoCounter = document.querySelector('.todo-counter');
+  const todoCounter = document.querySelector(".todo-counter");
   const count = todos.filter((todo) => todo.done === false).length;
   todoCounter.innerHTML = `
     <span class="">남은 할일 ${count}</span>
@@ -19,28 +29,28 @@ const countTodo = (todos) => {
 };
 
 const startEditTodo = (todoContainer) => {
-  const editBtn = todoContainer.querySelector('.edit-btn');
-  editBtn.classList.add('display-none');
+  const editBtn = todoContainer.querySelector(".edit-btn");
+  editBtn.classList.add("display-none");
 
-  const doneBtn = todoContainer.querySelector('.done-btn');
-  doneBtn.classList.remove('display-none');
+  const doneBtn = todoContainer.querySelector(".done-btn");
+  doneBtn.classList.remove("display-none");
 
-  const editInput = todoContainer.querySelector('.edit-input');
-  editInput.classList.remove('display-none');
+  const editInput = todoContainer.querySelector(".edit-input");
+  editInput.classList.remove("display-none");
 
-  const todoText = todoContainer.querySelector('.todo-text');
-  todoText.classList.add('display-none');
+  const todoText = todoContainer.querySelector(".todo-text");
+  todoText.classList.add("display-none");
   editInput.value = todoText.textContent;
 };
 
 const finishEditTodo = async (todoContainer, todo) => {
-  const editBtn = todoContainer.querySelector('.edit-btn');
-  editBtn.classList.remove('display-none');
+  const editBtn = todoContainer.querySelector(".edit-btn");
+  editBtn.classList.remove("display-none");
 
-  const doneBtn = todoContainer.querySelector('.done-btn');
-  doneBtn.classList.add('display-none');
+  const doneBtn = todoContainer.querySelector(".done-btn");
+  doneBtn.classList.add("display-none");
 
-  const editInput = todoContainer.querySelector('.edit-input');
+  const editInput = todoContainer.querySelector(".edit-input");
 
   todo.title = editInput.value;
 
@@ -63,39 +73,41 @@ const toggleTodoIcon = async (todoContainer, todo) => {
 };
 
 const clickTodosHandler = async (e) => {
-  const todoContainer = e.target.closest('.todo-container');
-  const todo = {
-    id: todoContainer.dataset.id,
-    title: todoContainer.querySelector('.todo-text').textContent,
-    done: 'true' === todoContainer.dataset.done,
-  };
+  const todoContainer = e.target.closest(".todo-container");
 
   if (!todoContainer) {
     return;
   }
-  if (e.target.matches('.edit-btn')) {
+
+  const todo = {
+    id: todoContainer.dataset.id,
+    title: todoContainer.querySelector(".todo-text").textContent,
+    done: "true" === todoContainer.dataset.done,
+  };
+
+  if (e.target.matches(".edit-btn")) {
     startEditTodo(todoContainer);
   }
-  if (e.target.matches('.done-btn')) {
+  if (e.target.matches(".done-btn")) {
     finishEditTodo(todoContainer, todo);
   }
-  if (e.target.matches('.delete-btn')) {
+  if (e.target.matches(".delete-btn")) {
     deleteEditTodo(todoContainer);
   }
-  if (e.target.matches('.todo--toggle')) {
+  if (e.target.matches(".todo--toggle")) {
     toggleTodoIcon(todoContainer, todo);
   }
 };
 
 const renderTodos = (todos) => {
-  todosContainer.innerHTML = '';
+  todosContainer.innerHTML = "";
   const todosEl = todos
     .map(
       (todo) =>
         `<li class="todo-container" data-id=${todo.id} data-done='${todo.done}'>
-          <div>
+          <div class="todo-container__task">
             <span class="material-symbols-outlined todo--toggle">${
-              todo.done ? 'check_circle' : 'radio_button_unchecked'
+              todo.done ? "check_circle" : "radio_button_unchecked"
             }</span>
             <span class="todo-text">${todo.title}</span>
             <input class="edit-input display-none" type ="text"/>
@@ -108,23 +120,24 @@ const renderTodos = (todos) => {
         </li> 
     `
     )
-    .join('');
+    .join("");
   todosContainer.innerHTML += todosEl;
 };
 
-todoForm.addEventListener('submit', async (event) => {
+todoForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   let todoInputText = todoInput.value;
 
   await createTodo(todoInputText);
   showTodos();
-  todoInputText = '';
+  todoInputText = "";
 });
 
 renderDate();
 showTodos();
 
-todosContainer.addEventListener('click', clickTodosHandler);
+todosContainer.addEventListener("click", clickTodosHandler);
+deleteAllBtn.addEventListener("click", deleteTodoAllHandler);
 
 setInterval(() => {
   renderDate();
