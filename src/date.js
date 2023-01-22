@@ -16,7 +16,7 @@ const getCurrentDate = () => {
 export const renderDate = () => {
   const { year, month, date, day, hours, minutes } = getCurrentDate();
   dateTime.innerHTML = `
-  <div class="date-container">
+  <div class="date__container">
     <span class="date">${date}</span>
     <div class="year">
       <span>${month}</span>
@@ -24,10 +24,12 @@ export const renderDate = () => {
     </div>
     <span class="day">${day}</span>
   </div>
-  <span class="time">  
-    ${hours % 12 === 0 ? hours : hours % 12}:${minutes} ${
-    hours > 11 ? "PM" : "AM"
-  } 
-  </span>
+  <div class="time__container">
+    <span class="time">  
+      ${hours % 12 === 0 ? hours : hours % 12}:${minutes} ${
+      hours > 11 ? "PM" : "AM"
+    } 
+    </span>
+  </div>  
   `;
 };
