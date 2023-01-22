@@ -1,7 +1,7 @@
 .date-time {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
 }
 
 .date-container {
@@ -11,6 +11,7 @@
 .date {
   font-size: 34px;
   padding-right: 6px;
+  color: #002790;
 }
 
 .year {
