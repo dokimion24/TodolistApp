@@ -25,7 +25,9 @@ export const renderDate = () => {
     <span class="day">${day}</span>
   </div>
   <span class="time">  
-    ${hours % 12}:${minutes} ${hours > 13 ? "PM" : "AM"} 
+    ${hours % 12 === 0 ? hours : hours % 12}:${minutes} ${
+    hours > 11 ? "PM" : "AM"
+  } 
   </span>
   `;
 };
