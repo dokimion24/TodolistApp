@@ -28,27 +28,31 @@ form {
   margin-bottom: 20px;
 }
 
-.todo-container {
+.todos__container > div {
+  margin-bottom: 10px;
+}
+
+.todo__container {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   padding: 10px 15px;
   background-color: #f5f5f5;
   border-radius: 10px;
-  margin-bottom: 10px;
 }
 
-.todo-container__task {
+.todo__container__task {
   display: flex;
   align-items: center;
 }
 
-.todo-container__task span {
+.todo__container__task span {
   padding-right: 6px;
 }
 
-.todo-container__btn {
-
+.todo-done__menu button {
+  display: flex;
+  align-items: center;
 }
 
 .todo-input {
