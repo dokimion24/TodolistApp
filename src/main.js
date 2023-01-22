@@ -3,15 +3,18 @@ import { renderDate } from "./date.js";
 const todoForm = document.querySelector("form");
 const todoInput = todoForm.querySelector("input");
 const todosContainer = document.querySelector(".todos__container");
-const deleteAllBtn = document.querySelector(".todo-option, .delete-all-btn");
+const todosDoneContainer = document.querySelector(".todos-done__container");
+
+const deleteAllBtn = document.querySelector(".delete-all-btn");
 
 const deleteTodoAllHandler = async () => {
-  console.log(deleteAllBtn);
   const todos = await readTodos();
+
   todos.map((todo) => {
     deleteTodo(todo.id);
   });
   todosContainer.innerHTML = "";
+  countTodo([]);
 };
 
 const showTodos = async () => {
@@ -21,7 +24,7 @@ const showTodos = async () => {
 };
 
 const countTodo = (todos) => {
-  const todoCounter = document.querySelector(".todo-counter");
+  const todoCounter = document.querySelector(".todo-util__counter");
   const count = todos.filter((todo) => todo.done === false).length;
   todoCounter.innerHTML = `
     <span class="">남은 할일 ${count}</span>
@@ -66,14 +69,24 @@ const deleteEditTodo = async (todoContainer) => {
 
 const toggleTodoIcon = async (todoContainer, todo) => {
   todoContainer.dataset.done = `${!todo.done}`;
-  console.log(todoContainer);
   todo.done = !todo.done;
   await editTodo(todo);
+
+  console.log(todoContainer);
+
+  if (todo.done === false) {
+    todoContainer.classList.remove("fade-in__up");
+    todoContainer.classList.add("fade-in__down");
+  } else {
+    todoContainer.classList.remove("fade-in__down");
+    todoContainer.classList.add("fade-in__up");
+  }
+
   showTodos();
 };
 
 const clickTodosHandler = async (e) => {
-  const todoContainer = e.target.closest(".todo-container");
+  const todoContainer = e.target.closest(".todo__container");
 
   if (!todoContainer) {
     return;
@@ -102,26 +115,54 @@ const clickTodosHandler = async (e) => {
 const renderTodos = (todos) => {
   todosContainer.innerHTML = "";
   const todosEl = todos
-    .map(
-      (todo) =>
-        `<li class="todo-container" data-id=${todo.id} data-done='${todo.done}'>
-          <div class="todo-container__task">
-            <span class="material-symbols-outlined todo--toggle">${
-              todo.done ? "check_circle" : "radio_button_unchecked"
-            }</span>
+    .map((todo) =>
+      todo.done === false
+        ? `
+        <div class="todo__container" data-id=${todo.id} data-done='${todo.done}'>
+          <div class="todo__container__task">
+            <span class="material-symbols-outlined todo--toggle">radio_button_unchecked</span>
             <span class="todo-text">${todo.title}</span>
             <input class="edit-input display-none" type ="text"/>
           </div>
-          <div class="todo-container__btn">
+          <div class="todo__container__btn">
             <span class="material-symbols-outlined edit-btn">edit</span>
             <span class="material-symbols-outlined done-btn display-none">done</span>
             <span class="material-symbols-outlined delete-btn">delete</span>
           </div>
-        </li> 
-    `
+        </div>
+      `
+        : ``
+    )
+    .join("")
+    .concat(
+      `
+        <div class="todo-done__menu">
+            <button>
+              <span class="material-symbols-outlined">chevron_right</span>
+              <span>완료됨</span>
+            </button>
+        </div>
+      `
+    );
+
+  const doneTodosEl = todos
+    .map((todo) =>
+      todo.done === true
+        ? `
+          <div class="todo__container" data-id=${todo.id} data-done='${todo.done}'>
+            <div class="todo__container__task">
+              <span class="material-symbols-outlined todo--toggle">check_circle</span>
+              <span class="todo-text line-through">${todo.title}</span>
+            </div>
+            <div class="todo__container__btn">
+              <span class="material-symbols-outlined delete-btn">delete</span>
+            </div>
+          </div>
+        `
+        : ``
     )
     .join("");
-  todosContainer.innerHTML += todosEl;
+  todosContainer.innerHTML += `${todosEl}${doneTodosEl}`;
 };
 
 todoForm.addEventListener("submit", async (event) => {
@@ -139,6 +180,6 @@ showTodos();
 todosContainer.addEventListener("click", clickTodosHandler);
 deleteAllBtn.addEventListener("click", deleteTodoAllHandler);
 
-setInterval(() => {
-  renderDate();
-}, 1000);
+// setInterval(() => {
+//   renderDate();
+// }, 1000);
