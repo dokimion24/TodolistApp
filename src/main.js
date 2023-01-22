@@ -1,11 +1,10 @@
-import { readTodos, createTodo, editTodo, deleteTodo } from "./request.js";
-import { renderDate } from "./date.js";
-const todoForm = document.querySelector("form");
-const todoInput = todoForm.querySelector("input");
-const todosContainer = document.querySelector(".todos__container");
-const todosDoneContainer = document.querySelector(".todos-done__container");
+import { readTodos, createTodo, editTodo, deleteTodo } from './request.js';
+import { renderDate } from './date.js';
+const todoForm = document.querySelector('form');
+const todoInput = todoForm.querySelector('input');
+const todosContainer = document.querySelector('.todos__container');
 
-const deleteAllBtn = document.querySelector(".delete-all-btn");
+const deleteAllBtn = document.querySelector('.delete-all-btn');
 
 const deleteTodoAllHandler = async () => {
   const todos = await readTodos();
@@ -13,18 +12,20 @@ const deleteTodoAllHandler = async () => {
   todos.map((todo) => {
     deleteTodo(todo.id);
   });
-  todosContainer.innerHTML = "";
+  todosContainer.innerHTML = '';
   countTodo([]);
 };
 
 const showTodos = async () => {
   const todos = await readTodos();
-  renderTodos(todos);
-  countTodo(todos);
+  const notDoneTodos = todos.filter((todo) => todo.done === false);
+  const doneTodos = todos.filter((todo) => todo.done === true);
+  renderTodos(notDoneTodos, doneTodos);
+  countTodo(notDoneTodos);
 };
 
 const countTodo = (todos) => {
-  const todoCounter = document.querySelector(".todo-util__counter");
+  const todoCounter = document.querySelector('.todo-util__counter');
   const count = todos.filter((todo) => todo.done === false).length;
   todoCounter.innerHTML = `
     <span class="">남은 할일 ${count}</span>
@@ -32,28 +33,28 @@ const countTodo = (todos) => {
 };
 
 const startEditTodo = (todoContainer) => {
-  const editBtn = todoContainer.querySelector(".edit-btn");
-  editBtn.classList.add("display-none");
+  const editBtn = todoContainer.querySelector('.edit-btn');
+  editBtn.classList.add('display-none');
 
-  const doneBtn = todoContainer.querySelector(".done-btn");
-  doneBtn.classList.remove("display-none");
+  const doneBtn = todoContainer.querySelector('.done-btn');
+  doneBtn.classList.remove('display-none');
 
-  const editInput = todoContainer.querySelector(".edit-input");
-  editInput.classList.remove("display-none");
+  const editInput = todoContainer.querySelector('.edit-input');
+  editInput.classList.remove('display-none');
 
-  const todoText = todoContainer.querySelector(".todo-text");
-  todoText.classList.add("display-none");
+  const todoText = todoContainer.querySelector('.todo-text');
+  todoText.classList.add('display-none');
   editInput.value = todoText.textContent;
 };
 
 const finishEditTodo = async (todoContainer, todo) => {
-  const editBtn = todoContainer.querySelector(".edit-btn");
-  editBtn.classList.remove("display-none");
+  const editBtn = todoContainer.querySelector('.edit-btn');
+  editBtn.classList.remove('display-none');
 
-  const doneBtn = todoContainer.querySelector(".done-btn");
-  doneBtn.classList.add("display-none");
+  const doneBtn = todoContainer.querySelector('.done-btn');
+  doneBtn.classList.add('display-none');
 
-  const editInput = todoContainer.querySelector(".edit-input");
+  const editInput = todoContainer.querySelector('.edit-input');
 
   todo.title = editInput.value;
 
@@ -72,21 +73,17 @@ const toggleTodoIcon = async (todoContainer, todo) => {
   todo.done = !todo.done;
   await editTodo(todo);
 
-  console.log(todoContainer);
-
-  if (todo.done === false) {
-    todoContainer.classList.remove("fade-in__up");
-    todoContainer.classList.add("fade-in__down");
-  } else {
-    todoContainer.classList.remove("fade-in__down");
-    todoContainer.classList.add("fade-in__up");
-  }
+  // if (todo.done === false) {
+  //   todoContainer.classList.add('fade-in__down');
+  // } else {
+  //   todoContainer.classList.add('fade-in__up');
+  // }
 
   showTodos();
 };
 
 const clickTodosHandler = async (e) => {
-  const todoContainer = e.target.closest(".todo__container");
+  const todoContainer = e.target.closest('.todo__container');
 
   if (!todoContainer) {
     return;
@@ -94,30 +91,30 @@ const clickTodosHandler = async (e) => {
 
   const todo = {
     id: todoContainer.dataset.id,
-    title: todoContainer.querySelector(".todo-text").textContent,
-    done: "true" === todoContainer.dataset.done,
+    title: todoContainer.querySelector('.todo-text').textContent,
+    done: 'true' === todoContainer.dataset.done,
   };
 
-  if (e.target.matches(".edit-btn")) {
+  if (e.target.matches('.edit-btn')) {
     startEditTodo(todoContainer);
   }
-  if (e.target.matches(".done-btn")) {
+  if (e.target.matches('.done-btn')) {
     finishEditTodo(todoContainer, todo);
   }
-  if (e.target.matches(".delete-btn")) {
+  if (e.target.matches('.delete-btn')) {
     deleteEditTodo(todoContainer);
   }
-  if (e.target.matches(".todo--toggle")) {
+  if (e.target.matches('.todo--toggle')) {
     toggleTodoIcon(todoContainer, todo);
   }
 };
 
-const renderTodos = (todos) => {
-  todosContainer.innerHTML = "";
-  const todosEl = todos
-    .map((todo) =>
-      todo.done === false
-        ? `
+const renderTodos = (notDoneTodos, doneTodos) => {
+  todosContainer.innerHTML = ``;
+  const notDoneTodosEl = notDoneTodos
+    .map(
+      (todo) =>
+        `
         <div class="todo__container" data-id=${todo.id} data-done='${todo.done}'>
           <div class="todo__container__task">
             <span class="material-symbols-outlined todo--toggle">radio_button_unchecked</span>
@@ -130,55 +127,53 @@ const renderTodos = (todos) => {
             <span class="material-symbols-outlined delete-btn">delete</span>
           </div>
         </div>
-      `
-        : ``
-    )
-    .join("")
-    .concat(
-      `
-        <div class="todo-done__menu">
-            <button>
-              <span class="material-symbols-outlined">chevron_right</span>
-              <span>완료됨</span>
-            </button>
-        </div>
-      `
-    );
-
-  const doneTodosEl = todos
-    .map((todo) =>
-      todo.done === true
-        ? `
-          <div class="todo__container" data-id=${todo.id} data-done='${todo.done}'>
-            <div class="todo__container__task">
-              <span class="material-symbols-outlined todo--toggle">check_circle</span>
-              <span class="todo-text line-through">${todo.title}</span>
-            </div>
-            <div class="todo__container__btn">
-              <span class="material-symbols-outlined delete-btn">delete</span>
-            </div>
-          </div>
         `
-        : ``
     )
-    .join("");
-  todosContainer.innerHTML += `${todosEl}${doneTodosEl}`;
+    .join('');
+
+  const doneTodoTitle = `
+    <div class="todo-done__menu">
+        <button>
+          <span class="material-symbols-outlined">chevron_right</span>
+          <span>완료됨</span>
+        </button>
+    </div>
+  `;
+
+  const doneTodosEl = doneTodos
+    .map(
+      (todo) =>
+        `
+        <div class="todo__container" data-id=${todo.id} data-done='${todo.done}'>
+          <div class="todo__container__task">
+            <span class="material-symbols-outlined todo--toggle">check_circle</span>
+            <span class="todo-text line-through">${todo.title}</span>
+          </div>
+          <div class="todo__container__btn">
+            <span class="material-symbols-outlined delete-btn">delete</span>
+          </div>
+        </div>
+        `
+    )
+    .join('');
+
+  todosContainer.innerHTML += `${notDoneTodosEl}${doneTodoTitle}${doneTodosEl}`;
 };
 
-todoForm.addEventListener("submit", async (event) => {
+todoForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   let todoInputText = todoInput.value;
 
   await createTodo(todoInputText);
   showTodos();
-  todoInputText = "";
+  todoInputText = '';
 });
 
 renderDate();
 showTodos();
 
-todosContainer.addEventListener("click", clickTodosHandler);
-deleteAllBtn.addEventListener("click", deleteTodoAllHandler);
+todosContainer.addEventListener('click', clickTodosHandler);
+deleteAllBtn.addEventListener('click', deleteTodoAllHandler);
 
 // setInterval(() => {
 //   renderDate();
