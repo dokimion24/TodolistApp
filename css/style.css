@@ -1,21 +1,19 @@
-@import "./global.css";
-@import "./reset.css";
-@import "./date.css";
+@import './global.css';
+@import './reset.css';
+@import './date.css';
 
 body {
-  font-family: "Pretendard Variable", Pretendard;
+  font-family: 'Pretendard Variable', Pretendard;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 15px;
-  background-color: #d9e1ea;
-
   height: 100vh;
 }
 
 #wrap {
-  width: 550px;
-  padding: 30px;
+  width: 480px;
+  padding: 50px 30px;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
@@ -25,11 +23,16 @@ body {
 form {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 }
 
 .todos__container > div {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.todos__container {
+  overflow-y: auto;
+  height: 520px;
 }
 
 .todo__container {
@@ -38,6 +41,19 @@ form {
   justify-content: space-between;
   padding: 10px 15px;
   background-color: #f5f5f5;
+  border-radius: 10px;
+  margin-right: 8px;
+}
+
+.todos__container::-webkit-scrollbar {
+  width: 7px;
+}
+.todos__container::-webkit-scrollbar-thumb {
+  background-color: #002790;
+  border-radius: 10px;
+}
+.todos__container::-webkit-scrollbar-track {
+  background-color: whitesmoke;
   border-radius: 10px;
 }
 
@@ -50,7 +66,8 @@ form {
   padding-right: 6px;
 }
 
-.todo-done__menu button {
+.todo-done__btn {
+  font-size: 14px;
   display: flex;
   align-items: center;
 }
@@ -75,16 +92,15 @@ form {
   display: flex;
 }
 
-.delete-all-btn,
-.sort-btn {
+.delete-all-btn {
+  font-size: 14px;
   display: flex;
   align-items: center;
+  margin-right: 8px;
 }
 
-.sort-btn {
-  padding-left: 10px;
-}
-
-.sort-btn span + span {
-  padding-left: 3px;
+.toggle-todo,
+.edit-btn,
+.delete-btn {
+  cursor: pointer;
 }
