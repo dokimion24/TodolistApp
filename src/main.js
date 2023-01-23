@@ -1,17 +1,29 @@
-import { readTodos, createTodo, editTodo, deleteTodo } from './request.js';
+import { readTodos, addTodo, editTodo, deleteTodo } from './request.js';
 import { renderDate } from './date.js';
 const todoForm = document.querySelector('form');
 const todoInput = todoForm.querySelector('input');
 const todosContainer = document.querySelector('.todos__container');
-
 const deleteAllBtn = document.querySelector('.delete-all-btn');
+
+const validateTodoInputHandler = async (event) => {
+  event.preventDefault();
+  let todoInputText = todoInput.value;
+
+  if (todoInputText === '') {
+    return;
+  }
+  const todo = await addTodo(todoInputText);
+  showTodos();
+  todoInput.value = '';
+};
 
 const deleteTodoAllHandler = async () => {
   const todos = await readTodos();
 
-  todos.map((todo) => {
-    deleteTodo(todo.id);
+  todos.map(async (todo) => {
+    await deleteTodo(todo.id);
   });
+
   todosContainer.innerHTML = '';
   countTodo([]);
 };
@@ -47,7 +59,13 @@ const startEditTodo = (todoContainer) => {
   editInput.value = todoText.textContent;
 };
 
-const finishEditTodo = async (todoContainer, todo) => {
+const finishEditTodo = async (todoContainer) => {
+  const todo = {
+    id: todoContainer.dataset.id,
+    title: todoContainer.querySelector('.todo-text').textContent,
+    done: 'true' === todoContainer.dataset.done,
+  };
+
   const editBtn = todoContainer.querySelector('.edit-btn');
   editBtn.classList.remove('display-none');
 
@@ -68,44 +86,37 @@ const deleteEditTodo = async (todoContainer) => {
   showTodos();
 };
 
-const toggleTodoIcon = async (todoContainer, todo) => {
-  todoContainer.dataset.done = `${!todo.done}`;
-  todo.done = !todo.done;
-  await editTodo(todo);
-
-  // if (todo.done === false) {
-  //   todoContainer.classList.add('fade-in__down');
-  // } else {
-  //   todoContainer.classList.add('fade-in__up');
-  // }
-
-  showTodos();
-};
-
-const clickTodosHandler = async (e) => {
-  const todoContainer = e.target.closest('.todo__container');
-
-  if (!todoContainer) {
-    return;
-  }
-
+const toggleTodoIcon = async (todoContainer) => {
   const todo = {
     id: todoContainer.dataset.id,
     title: todoContainer.querySelector('.todo-text').textContent,
     done: 'true' === todoContainer.dataset.done,
   };
 
+  todoContainer.dataset.done = `${!todo.done}`;
+  todo.done = !todo.done;
+  await editTodo(todo);
+
+  showTodos();
+};
+
+const clickTodosHandler = async (e) => {
+  const todoContainer = e.target.closest('.todos__container > div');
+
+  if (!todoContainer) {
+    return;
+  }
   if (e.target.matches('.edit-btn')) {
     startEditTodo(todoContainer);
   }
   if (e.target.matches('.done-btn')) {
-    finishEditTodo(todoContainer, todo);
+    finishEditTodo(todoContainer);
   }
   if (e.target.matches('.delete-btn')) {
     deleteEditTodo(todoContainer);
   }
-  if (e.target.matches('.todo--toggle')) {
-    toggleTodoIcon(todoContainer, todo);
+  if (e.target.matches('.toggle-todo')) {
+    toggleTodoIcon(todoContainer);
   }
 };
 
@@ -117,7 +128,7 @@ const renderTodos = (notDoneTodos, doneTodos) => {
         `
         <div class="todo__container" data-id=${todo.id} data-done='${todo.done}'>
           <div class="todo__container__task">
-            <span class="material-symbols-outlined todo--toggle">radio_button_unchecked</span>
+            <span class="material-symbols-outlined toggle-todo">radio_button_unchecked</span>
             <span class="todo-text">${todo.title}</span>
             <input class="edit-input display-none" type ="text"/>
           </div>
@@ -132,11 +143,11 @@ const renderTodos = (notDoneTodos, doneTodos) => {
     .join('');
 
   const doneTodoTitle = `
-    <div class="todo-done__menu">
-        <button>
-          <span class="material-symbols-outlined">chevron_right</span>
-          <span>완료됨</span>
-        </button>
+    <div class="todo-done">
+      <div class="todo-done__btn">
+        <span class="material-symbols-outlined slide-btn">chevron_right</span>
+        <span class="slide-btn">완료됨 ${doneTodos.length}</span>
+      </div>
     </div>
   `;
 
@@ -144,9 +155,9 @@ const renderTodos = (notDoneTodos, doneTodos) => {
     .map(
       (todo) =>
         `
-        <div class="todo__container" data-id=${todo.id} data-done='${todo.done}'>
+        <div class="todo__container color-gray" data-id=${todo.id} data-done='${todo.done}'>
           <div class="todo__container__task">
-            <span class="material-symbols-outlined todo--toggle">check_circle</span>
+            <span class="material-symbols-outlined toggle-todo">check_circle</span>
             <span class="todo-text line-through">${todo.title}</span>
           </div>
           <div class="todo__container__btn">
@@ -160,21 +171,9 @@ const renderTodos = (notDoneTodos, doneTodos) => {
   todosContainer.innerHTML += `${notDoneTodosEl}${doneTodoTitle}${doneTodosEl}`;
 };
 
-todoForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  let todoInputText = todoInput.value;
-
-  await createTodo(todoInputText);
-  showTodos();
-  todoInputText = '';
-});
-
 renderDate();
 showTodos();
 
+todoForm.addEventListener('submit', validateTodoInputHandler);
 todosContainer.addEventListener('click', clickTodosHandler);
 deleteAllBtn.addEventListener('click', deleteTodoAllHandler);
-
-// setInterval(() => {
-//   renderDate();
-// }, 1000);
