@@ -45,7 +45,7 @@ const countTodo = (todos) => {
 
   const count = todos.filter((todo) => todo.done === false).length;
   todoCounter.innerHTML = `
-    <span class="">남은 할일 ${count}</span>
+    <span class=''>남은 할일 ${count}</span>
   `;
 };
 
@@ -133,16 +133,16 @@ const renderTodos = (notDoneTodos, doneTodos) => {
     .map(
       (todo) =>
         `
-        <div class="todo__container" data-id=${todo.id} data-done=${todo.done} draggable="true">
-          <div class="todo__container__task">
-            <span class="material-symbols-outlined toggle-todo">radio_button_unchecked</span>
-            <span class="todo-text">${todo.title}</span>
-            <input class="edit-input display-none" type ="text"/>
+        <div class='todo__container' data-id=${todo.id} data-done=${todo.done}>
+          <div class='todo__container__task'>
+            <span class='material-symbols-outlined toggle-todo'>radio_button_unchecked</span>
+            <span class='todo-text'>${todo.title}</span>
+            <input class='edit-input display-none' type ='text'/>
           </div>
-          <div class="todo__container__btn">
-            <span class="material-symbols-outlined edit-btn">edit</span>
-            <span class="material-symbols-outlined done-btn display-none">done</span>
-            <span class="material-symbols-outlined delete-btn">delete</span>
+          <div class='todo__container__btn'>
+            <span class='material-symbols-outlined edit-btn'>edit</span>
+            <span class='material-symbols-outlined done-btn display-none'>done</span>
+            <span class='material-symbols-outlined delete-btn'>delete</span>
           </div>
         </div>
         `
@@ -150,10 +150,10 @@ const renderTodos = (notDoneTodos, doneTodos) => {
     .join('');
 
   const doneTodoTitle = `
-    <div class="todo-done">
-      <div class="todo-done__btn">
-        <span class="material-symbols-outlined slide-btn">chevron_right</span>
-        <span class="slide-btn">완료됨 ${doneTodos.length}</span>
+    <div class='todo-done'>
+      <div class='todo-done__btn'>
+        <span class='material-symbols-outlined slide-btn'>chevron_right</span>
+        <span class='slide-btn'>완료됨 ${doneTodos.length}</span>
       </div>
     </div>
   `;
@@ -162,13 +162,13 @@ const renderTodos = (notDoneTodos, doneTodos) => {
     .map(
       (todo) =>
         `
-        <div class="todo__container color-gray" data-id=${todo.id} data-done='${todo.done}'>
-          <div class="todo__container__task">
-            <span class="material-symbols-outlined toggle-todo">check_circle</span>
-            <span class="todo-text line-through">${todo.title}</span>
+        <div class='todo__container color-gray' data-id=${todo.id} data-done='${todo.done}'>
+          <div class='todo__container__task'>
+            <span class='material-symbols-outlined toggle-todo'>check_circle</span>
+            <span class='todo-text line-through'>${todo.title}</span>
           </div>
-          <div class="todo__container__btn">
-            <span class="material-symbols-outlined delete-btn">delete</span>
+          <div class='todo__container__btn'>
+            <span class='material-symbols-outlined delete-btn'>delete</span>
           </div>
         </div>
         `
