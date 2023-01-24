@@ -79,6 +79,7 @@ form {
 
 .toggle-todo,
 .edit-btn,
+.done-btn,
 .delete-btn {
   cursor: pointer;
 }
