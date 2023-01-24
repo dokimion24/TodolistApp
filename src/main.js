@@ -1,4 +1,4 @@
-import { readTodos, addTodo, editTodo, deleteTodo } from './request.js';
+import { readTodos, addTodo, editTodo, deleteTodo } from './api.js';
 import { renderDate } from './date.js';
 
 const todoForm = document.querySelector('form');
@@ -184,11 +184,6 @@ showTodos();
 todoForm.addEventListener('submit', validateTodoInputHandler);
 todosContainer.addEventListener('click', clickTodosHandler);
 deleteAllBtn.addEventListener('click', deleteTodoAllHandler);
-
-new Sortable(todosContainer, {
-  animation: 150,
-  ghostClass: 'blue-background-class',
-});
 
 setInterval(() => {
   renderDate();
