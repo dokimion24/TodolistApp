@@ -1,12 +1,14 @@
 import { readTodos, addTodo, editTodo, deleteTodo } from './request.js';
 import { renderDate } from './date.js';
+
 const todoForm = document.querySelector('form');
-const todoInput = todoForm.querySelector('input');
 const todosContainer = document.querySelector('.todos__container');
 const deleteAllBtn = document.querySelector('.delete-all-btn');
 
 const validateTodoInputHandler = async (event) => {
   event.preventDefault();
+
+  const todoInput = todoForm.querySelector('input');
   let todoInputText = todoInput.value;
 
   if (todoInputText === '') {
@@ -30,14 +32,17 @@ const deleteTodoAllHandler = async () => {
 
 const showTodos = async () => {
   const todos = await readTodos();
+
   const notDoneTodos = todos.filter((todo) => todo.done === false);
   const doneTodos = todos.filter((todo) => todo.done === true);
+
   renderTodos(notDoneTodos, doneTodos);
   countTodo(notDoneTodos);
 };
 
 const countTodo = (todos) => {
   const todoCounter = document.querySelector('.todo-util__counter');
+
   const count = todos.filter((todo) => todo.done === false).length;
   todoCounter.innerHTML = `
     <span class="">남은 할일 ${count}</span>
@@ -100,12 +105,14 @@ const toggleTodoIcon = async (todoContainer) => {
   showTodos();
 };
 
+//todo__container Handler
 const clickTodosHandler = async (e) => {
   const todoContainer = e.target.closest('.todos__container > div');
 
   if (!todoContainer) {
     return;
   }
+
   if (e.target.matches('.edit-btn')) {
     startEditTodo(todoContainer);
   }
@@ -126,7 +133,7 @@ const renderTodos = (notDoneTodos, doneTodos) => {
     .map(
       (todo) =>
         `
-        <div class="todo__container" data-id=${todo.id} data-done='${todo.done}'>
+        <div class="todo__container" data-id=${todo.id} data-done=${todo.done} draggable="true">
           <div class="todo__container__task">
             <span class="material-symbols-outlined toggle-todo">radio_button_unchecked</span>
             <span class="todo-text">${todo.title}</span>
@@ -177,3 +184,12 @@ showTodos();
 todoForm.addEventListener('submit', validateTodoInputHandler);
 todosContainer.addEventListener('click', clickTodosHandler);
 deleteAllBtn.addEventListener('click', deleteTodoAllHandler);
+
+new Sortable(todosContainer, {
+  animation: 150,
+  ghostClass: 'blue-background-class',
+});
+
+setInterval(() => {
+  renderDate();
+}, 1000);
