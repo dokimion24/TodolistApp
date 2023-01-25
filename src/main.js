@@ -5,7 +5,7 @@ const todoForm = document.querySelector('form');
 const todosContainer = document.querySelector('.todos__container');
 const deleteAllBtn = document.querySelector('.delete-all-btn');
 
-const validateTodoInputHandler = async (event) => {
+const addTodoHandler = async (event) => {
   event.preventDefault();
 
   const todoInput = todoForm.querySelector('input');
@@ -42,7 +42,7 @@ const showTodos = async () => {
 };
 
 const countTodo = (todos) => {
-  console.log(todos)
+  console.log(todos);
   const todoCounter = document.querySelector('.todo-util__counter');
 
   todoCounter.innerHTML = `
@@ -182,7 +182,7 @@ const renderTodos = (notDoneTodos, doneTodos) => {
 renderDate();
 showTodos();
 
-todoForm.addEventListener('submit', validateTodoInputHandler);
+todoForm.addEventListener('submit', addTodoHandler);
 todosContainer.addEventListener('click', clickTodosHandler);
 deleteAllBtn.addEventListener('click', deleteTodoAllHandler);
 
