@@ -11,10 +11,11 @@ const validateTodoInputHandler = async (event) => {
   const todoInput = todoForm.querySelector('input');
   let todoInputText = todoInput.value;
 
-  if (todoInputText === '') {
+  if (todoInputText.trim() === '') {
     return;
   }
-  const todo = await addTodo(todoInputText);
+
+  await addTodo(todoInputText);
   showTodos();
   todoInput.value = '';
 };
@@ -43,7 +44,7 @@ const showTodos = async () => {
 const countTodo = (todos) => {
   const todoCounter = document.querySelector('.todo-util__counter');
 
-  const count = todos.filter((todo) => todo.done === false).length;
+  const count = todos.length;
   todoCounter.innerHTML = `
     <span class=''>남은 할일 ${count}</span>
   `;
