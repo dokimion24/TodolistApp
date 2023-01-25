@@ -42,11 +42,11 @@ const showTodos = async () => {
 };
 
 const countTodo = (todos) => {
+  console.log(todos)
   const todoCounter = document.querySelector('.todo-util__counter');
 
-  const count = todos.length;
   todoCounter.innerHTML = `
-    <span class=''>남은 할일 ${count}</span>
+    <span class=''>남은 할일 ${todos.length}</span>
   `;
 };
 
